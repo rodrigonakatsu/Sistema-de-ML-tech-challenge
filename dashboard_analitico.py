@@ -293,8 +293,8 @@ if df is not None:
                 df_filtered,
                 x='Obesity',
                 y='TUE',
-                title="Tempo com Dispositivos Tecnologicos",
-                labels={'TUE': 'Tempo de Uso (horas)', 'Obesity': 'Nivel'},
+                title="Tempo com Dispositivos Tecnologicos por Dia",
+                labels={'TUE': 'Tempo de Uso (horas/dia)', 'Obesity': 'Nivel'},
                 color='Obesity'
             )
             st.plotly_chart(fig, use_container_width=True)
