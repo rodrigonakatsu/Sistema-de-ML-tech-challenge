@@ -297,18 +297,169 @@ with tab1:
 
                 st.markdown('</div>', unsafe_allow_html=True)
 
-                # Grafico de probabilidades
-                st.markdown("### 📊 Probabilidades por Classe")
-                proba_df = pd.DataFrame({
-                    'Classe': target_encoder.classes_,
-                    'Probabilidade': prediction_proba[0] * 100
-                }).sort_values('Probabilidade', ascending=True)
+                # Analise Simplificada dos Dados
+                st.markdown("### 🔍 Analise Simplificada dos Dados")
 
-                fig = px.bar(proba_df, x='Probabilidade', y='Classe', orientation='h',
-                            color='Probabilidade', color_continuous_scale='RdYlGn_r',
-                            labels={'Probabilidade': 'Probabilidade (%)'})
-                fig.update_layout(height=400, showlegend=False)
-                st.plotly_chart(fig, use_container_width=True)
+                # Identificar fatores de risco
+                risk_factors = []
+                protective_factors = []
+
+                # Analise de IMC
+                if bmi >= 40:
+                    risk_factors.append(f"**IMC indica obesidade grave:** {bmi:.1f}")
+                elif bmi >= 30:
+                    risk_factors.append(f"**IMC indica obesidade:** {bmi:.1f}")
+                elif bmi >= 25:
+                    risk_factors.append(f"**IMC indica sobrepeso:** {bmi:.1f}")
+                elif bmi < 18.5:
+                    risk_factors.append(f"**IMC abaixo do normal:** {bmi:.1f}")
+                else:
+                    protective_factors.append(f"**IMC normal:** {bmi:.1f}")
+
+                # Analise de habitos alimentares
+                if favc == 'yes':
+                    risk_factors.append("**Consome alimentos caloricos frequentemente**")
+
+                if fcvc < 2.0:
+                    risk_factors.append("**Baixo consumo de vegetais**")
+                elif fcvc >= 2.5:
+                    protective_factors.append("**Bom consumo de vegetais**")
+
+                # Analise de atividade fisica
+                if faf < 1.0:
+                    risk_factors.append("**Baixa frequencia de atividade fisica (sedentarismo)**")
+                elif faf < 2.0:
+                    risk_factors.append("**Atividade fisica insuficiente**")
+                else:
+                    protective_factors.append("**Pratica atividade fisica regularmente**")
+
+                # Analise de historico familiar
+                if family_history == 'yes':
+                    risk_factors.append("**Historico familiar de sobrepeso**")
+
+                # Analise de consumo de agua
+                if ch2o < 2.0:
+                    risk_factors.append("**Baixo consumo de agua**")
+                else:
+                    protective_factors.append("**Consumo adequado de agua**")
+
+                # Analise de tempo de tela
+                if tue > 5.0:
+                    risk_factors.append("**Alto tempo de uso de dispositivos (sedentarismo)**")
+                elif tue > 3.0:
+                    risk_factors.append("**Tempo moderado/alto de uso de dispositivos**")
+
+                # Analise de fumante
+                if smoke == 'yes':
+                    risk_factors.append("**Tabagismo**")
+
+                # Exibir fatores em colunas
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.markdown("""
+                    <div style='background-color: #ffebee; padding: 1rem; border-radius: 5px; border-left: 4px solid #e74c3c;'>
+                        <h4 style='color: #c0392b; margin-top: 0;'>⚠️ Fatores de Risco Identificados:</h4>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    if risk_factors:
+                        for factor in risk_factors:
+                            st.markdown(f"• {factor}")
+                    else:
+                        st.success("Nenhum fator de risco significativo identificado!")
+
+                with col2:
+                    st.markdown("""
+                    <div style='background-color: #e8f5e9; padding: 1rem; border-radius: 5px; border-left: 4px solid #2ecc71;'>
+                        <h4 style='color: #27ae60; margin-top: 0;'>✅ Fatores Protetivos Identificados:</h4>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    if protective_factors:
+                        for factor in protective_factors:
+                            st.markdown(f"• {factor}")
+                    else:
+                        st.info("Oportunidade de melhorar habitos saudaveis.")
+
+                # Recomendacoes Gerais
+                st.markdown("---")
+                st.markdown("### 💡 Recomendacoes Gerais")
+
+                st.markdown("""
+                <div style='background-color: #e3f2fd; padding: 1.5rem; border-radius: 5px; border-left: 4px solid #2196f3;'>
+                    <h4 style='color: #1976d2; margin-top: 0;'>Baseado nos dados inseridos, considere:</h4>
+                """, unsafe_allow_html=True)
+
+                # Gerar recomendacoes personalizadas baseadas nos fatores de risco
+                recommendations = []
+
+                # Prioridade 1: Abordar fatores de risco especificos
+
+                # Recomendacoes para IMC
+                if bmi >= 40:
+                    recommendations.append(f"**PRIORITÁRIO: Consultar medico para plano de perda de peso** - IMC {bmi:.1f} indica obesidade grau III (morbida)")
+                elif bmi >= 30:
+                    recommendations.append(f"**Importante: Iniciar programa de perda de peso gradual** - Meta: reduzir 5-10% do peso atual (IMC atual: {bmi:.1f})")
+                elif bmi >= 25:
+                    recommendations.append(f"**Reduzir peso gradualmente** - Meta: alcançar IMC entre 18.5-24.9 (IMC atual: {bmi:.1f})")
+                elif bmi < 18.5:
+                    recommendations.append(f"**Consultar nutricionista para ganho de peso saudavel** - IMC {bmi:.1f} esta abaixo do recomendado")
+
+                # Recomendacoes para atividade fisica
+                if faf < 1.0:
+                    recommendations.append(f"**Iniciar atividade fisica gradualmente** - Comece com 15-20 min/dia de caminhada (frequencia atual: {faf:.0f}x/semana)")
+                elif faf < 2.0:
+                    recommendations.append(f"**Aumentar frequencia de atividade fisica** - Meta: minimo 3-5x/semana, 30min/dia (atual: {faf:.0f}x/semana)")
+                else:
+                    # Reforcar fator protetivo
+                    recommendations.append(f"**Manter rotina atual de exercicios** - Continue praticando {faf:.0f}x/semana")
+
+                # Recomendacoes para alimentacao
+                if favc == 'yes' and fcvc < 2.0:
+                    recommendations.append("**Substituir alimentos caloricos por vegetais e frutas** - Aumente consumo de vegetais para 3+ porcoes/dia")
+                elif favc == 'yes':
+                    recommendations.append("**Reduzir consumo de alimentos hipercaloricos** - Limite alimentos processados e fast-food a 1x/semana no maximo")
+                elif fcvc < 2.0:
+                    recommendations.append(f"**Aumentar consumo de vegetais** - Meta: minimo 3 porcoes/dia (atual: {fcvc:.0f} porcoes/dia)")
+                elif fcvc >= 2.5:
+                    recommendations.append(f"**Manter bons habitos alimentares** - Continue consumindo {fcvc:.0f} porcoes de vegetais/dia")
+
+                # Recomendacoes para hidratacao
+                if ch2o < 2.0:
+                    recommendations.append(f"**Aumentar consumo de agua** - Meta: 2-3 litros/dia (atual: {ch2o:.1f}L/dia)")
+                else:
+                    recommendations.append(f"**Manter hidratacao adequada** - Continue bebendo {ch2o:.1f}L de agua/dia")
+
+                # Recomendacoes para tempo de tela
+                if tue > 5.0:
+                    recommendations.append(f"**Reduzir significativamente tempo de tela** - Meta: maximo 3h/dia, substituir por atividades fisicas (atual: {tue:.1f}h/dia)")
+                elif tue > 3.0:
+                    recommendations.append(f"**Reduzir tempo de uso de dispositivos** - Meta: maximo 2-3h/dia (atual: {tue:.1f}h/dia)")
+
+                # Recomendacoes para tabagismo
+                if smoke == 'yes':
+                    recommendations.append("**IMPORTANTE: Buscar apoio para cessar tabagismo** - Fumar aumenta riscos cardiovasculares e dificulta perda de peso")
+
+                # Recomendacoes baseadas no historico familiar
+                if family_history == 'yes':
+                    recommendations.append("**Acompanhamento medico regular** - Historico familiar requer monitoramento preventivo mais frequente")
+
+                # Sempre incluir monitoramento
+                if bmi >= 25 or len(risk_factors) >= 3:
+                    recommendations.append("**Monitorar peso semanalmente** - Registre evolucao do IMC e circunferencia abdominal")
+
+                # Recomendacao final: sempre consultar profissional
+                if bmi >= 30 or len(risk_factors) >= 4:
+                    recommendations.append("**Consultar medico e nutricionista urgentemente** - Quadro requer acompanhamento profissional multidisciplinar")
+                else:
+                    recommendations.append("**Consultar profissional de saude** - Para orientacao personalizada e acompanhamento adequado")
+
+                # Exibir recomendacoes
+                for i, rec in enumerate(recommendations, 1):
+                    st.markdown(f"{i}. {rec}")
+
+                st.markdown("</div>", unsafe_allow_html=True)
 
             except Exception as e:
                 st.error(f"Erro ao realizar predicao: {e}")
