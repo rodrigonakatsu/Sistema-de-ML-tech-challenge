@@ -126,7 +126,7 @@ if 'scc' not in st.session_state:
 if 'faf' not in st.session_state:
     st.session_state.faf = 1.0
 if 'tue' not in st.session_state:
-    st.session_state.tue = 1.0
+    st.session_state.tue = 3.0
 if 'calc' not in st.session_state:
     st.session_state.calc = 'no'
 if 'mtrans' not in st.session_state:
@@ -168,7 +168,8 @@ with tab1:
         scc = st.selectbox("Monitora calorias?", ["no", "yes"],
                           index=0 if st.session_state.get('scc', 'no') == "no" else 1)
         faf = st.slider("Frequencia de atividade fisica (0-3)", 0.0, 3.0, float(st.session_state.get('faf', 1.0)), 0.5)
-        tue = st.slider("Tempo com dispositivos tecnologicos (horas)", 0.0, 2.0, float(st.session_state.get('tue', 1.0)), 0.5)
+        tue = st.slider("Tempo com dispositivos tecnologicos (horas/dia)", 0.0, 10.0, float(st.session_state.get('tue', 3.0)), 0.5,
+                       help="🟢 0-2h: Saudavel | 🟡 3-5h: Moderado | 🔴 5h+: Alto risco")
         calc_options = ["no", "Sometimes", "Frequently", "Always"]
         calc = st.selectbox("Frequencia de consumo de alcool", calc_options,
                            index=calc_options.index(st.session_state.get('calc', 'no')))
@@ -382,7 +383,7 @@ with tab3:
             st.session_state.ch2o = 2.5
             st.session_state.scc = 'yes'
             st.session_state.faf = 2.0
-            st.session_state.tue = 0.5
+            st.session_state.tue = 1.5
             st.session_state.calc = 'no'
             st.session_state.mtrans = 'Walking'
             st.success("✅ Caso 1 carregado! Volte para a aba 'Fazer Predicao'")
@@ -403,7 +404,7 @@ with tab3:
             st.session_state.ch2o = 1.0
             st.session_state.scc = 'no'
             st.session_state.faf = 0.0
-            st.session_state.tue = 2.0
+            st.session_state.tue = 6.0
             st.session_state.calc = 'Frequently'
             st.session_state.mtrans = 'Automobile'
             st.success("✅ Caso 2 carregado! Volte para a aba 'Fazer Predicao'")
@@ -424,7 +425,7 @@ with tab3:
             st.session_state.ch2o = 2.0
             st.session_state.scc = 'no'
             st.session_state.faf = 2.0
-            st.session_state.tue = 1.0
+            st.session_state.tue = 3.0
             st.session_state.calc = 'Frequently'
             st.session_state.mtrans = 'Public_Transportation'
             st.success("✅ Caso 3 carregado! Volte para a aba 'Fazer Predicao'")
